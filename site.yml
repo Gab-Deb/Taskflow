@@ -1,0 +1,15 @@
+- name: Déployer la page d'accueil sur les conteneurs web
+  hosts: web
+  gather_facts: false
+  tasks:
+    - name: Créer le répertoire servi
+      ansible.builtin.file:
+        path: /srv/www
+        state: directory
+        mode: "0755"
+
+    - name: Générer index.html depuis le modèle
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /srv/www/index.html
+        mode: "0644"

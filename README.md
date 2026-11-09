@@ -20,3 +20,14 @@ Ouvrez http://127.0.0.1:8000/health puis /metrics. GET /tasks liste les tâches.
 5. **Atelier 5 en ++** — Déployez l’image chez le fournisseur choisi. Configurez le port cible 8000 puis vérifiez /health.
 
 SQLite utilise un fichier local par instance. Les tâches de démonstration peuvent disparaître au remplacement du conteneur et chaque réplica a sa propre liste. Utilisez /health pour l’expérience de disponibilité. Pour disposer d’une liste commune durable, il faudrait une base partagée.
+
+## Atelier 2 — commandes
+
+Prérequis : Docker démarré, Terraform ≥ 1.6 et `python -m pip install ansible docker` (le paquet `ansible` inclut la collection `community.docker`).
+
+    terraform init
+    terraform apply            # crée taskflow-web-1 et taskflow-web-2 (ports 8081 et 8082)
+    ansible-playbook -i inventory.ini site.yml   # 1er passage : changed=1 par hôte
+    curl http://127.0.0.1:8081                   # <h1>taskflow-web-1</h1>
+    ansible-playbook -i inventory.ini site.yml   # 2e passage : changed=0 (idempotent)
+    terraform destroy

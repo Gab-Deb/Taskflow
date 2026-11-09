@@ -1,0 +1,5 @@
+Flask>=3.1,<4
+prometheus-client>=0.21,<1
+gunicorn>=23,<30
+pytest>=8,<10
+ruff>=0.9,<1

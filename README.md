@@ -31,3 +31,17 @@ Prérequis : Docker démarré, Terraform ≥ 1.6 et `python -m pip install ansib
     curl http://127.0.0.1:8081                   # <h1>taskflow-web-1</h1>
     ansible-playbook -i inventory.ini site.yml   # 2e passage : changed=0 (idempotent)
     terraform destroy
+
+## Atelier 3 — commandes
+
+    docker build -t taskflow:v1 .
+    docker run --rm -p 8000:8000 taskflow:v1        # http://127.0.0.1:8000/health → "version": "v1"
+    docker build --build-arg APP_VERSION=v2 -t taskflow:v2 .
+
+    kind create cluster --name taskflow
+    kind load docker-image taskflow:v1 taskflow:v2 --name taskflow
+    kubectl apply -f k8s/
+    kubectl rollout status deployment/taskflow
+    kubectl run client --rm -it --image=curlimages/curl --restart=Never -- curl -s http://taskflow/health
+    kubectl set image deployment/taskflow taskflow=taskflow:v2   # passage en v2
+    kubectl run client --rm -it --image=curlimages/curl --restart=Never -- curl -s http://taskflow/health
